@@ -41,9 +41,6 @@ class Agent():
 
         action_batch_iters = self.memory.action_batch(batch)
         finished_batch = torch.tensor(self.memory.finished_batch(batch),dtype=torch.bool).to(self.model.device)
-        #q_eval = self.model.forward(state_batch)[batch_index,action_batch_iters]
-        #q_next = self.model.forward(new_state_batch)
-        #q_next[finished_batch] = 0.0
-        #q_target = reward_batch + self.GAMMA * torch.max(q_next,dim=1)[0]
+       
         loss = self.model.loss(prediction,expected.to(self.model.device)).to(self.model.device)  
         self.model.compute_loss(loss)
