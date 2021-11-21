@@ -14,7 +14,7 @@ class ColorIdentifier(unittest.TestCase):
         path, obs = TakePicture()
         object_identifier = ObjectIdentifierFactory("color", path)
         object_identifier.ProcessImage()
-        cordinates = object_identifier.GetCordinates()
+        cordinates = object_identifier.GetCordinates(obs)
         for i in range(3):
             self.assertLess(GetError(obs['achieved_goal'][i], cordinates['achieved_goal'][i]), Error)
         for i in range(3):
