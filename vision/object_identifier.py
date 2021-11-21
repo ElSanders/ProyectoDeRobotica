@@ -5,6 +5,7 @@ class ObjectIdentifier(ABC):
         self.obs = { 'achieved_goal' : [0,0,0.42470209],
                      'desired_goal' : [0,0,0.42469975]}
         self.img_path_ = img_path
+        self.cont = 0
         super().__init__()
 
     @abstractmethod
@@ -14,7 +15,7 @@ class ObjectIdentifier(ABC):
         pass
 
     @abstractmethod
-    def GetCordinates(self):
+    def GetCordinates(self, obs):
         # Returns the initial coordinates in the form of a dictionary.
         # ['achieved_goal'] = [x,y,z]
         # ['desired_goal'] = [x,y,z]

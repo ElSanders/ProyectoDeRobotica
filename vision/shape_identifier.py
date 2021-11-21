@@ -52,5 +52,8 @@ class ShapeIdentifier(ObjectIdentifier):
                 cv2.putText(img, 'Circle', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
                 self.obs['desired_goal'][0], self.obs['desired_goal'][1] = image_util.ToRealWorld(y,x)
 
-    def GetCordinates(self):
-        return self.obs
+    def GetCordinates(self, obs):
+        if (self.cont == 0):
+            self.cont += 1
+            return self.obs
+        return obs

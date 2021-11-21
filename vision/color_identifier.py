@@ -37,5 +37,8 @@ class ColorIdentifier(ObjectIdentifier):
 
 
 
-    def GetCordinates(self):
-        return self.obs
+    def GetCordinates(self, obs):
+        if (self.cont == 0):
+            self.cont += 1
+            return self.obs
+        return obs
