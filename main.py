@@ -9,7 +9,7 @@ from ReinforcementLearning.utils import *
 
 agent = Agent(10000, [6])
 env = gym.make('FetchPickAndPlace-v1')
-
+env.seed(2021)
 time_stamps = []
 avg_score= 0
 begin = time.time()
@@ -34,13 +34,12 @@ while(1):
     steps = 0
     start = time.time()
     while not done and steps < 500:
-        #env.render()
         picked = get_picked(last_obs)
         grab = -1 if picked else 1
         action = agent.get_action(get_observation(last_obs,picked))
         movement = torch.cat((action.cpu(),torch.tensor([grab]))).detach().numpy()
         obs_,reward,done,info = env.step(movement)
-
+        
         obs_ = {
             "observation" : obs_["observation"],
             "desired_goal": vision.GetCordinates(obs_)["desired_goal"],
@@ -53,7 +52,6 @@ while(1):
         agent.remember(get_observation(last_obs,picked),action.cpu().detach().numpy(),get_observation(obs_,picked),reward,done)
         agent.learn(action,get_expected(last_obs,picked=picked))
         end = time.time()
-        #print(f"Time {end-begin} MSE: {torch.mean((action.cpu() - get_expected(last_obs,picked=picked))**2)}")
         last_obs = obs_
         steps = steps + 1
         env.render()
