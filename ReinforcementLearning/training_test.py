@@ -2,6 +2,7 @@ import gym
 import torch
 import numpy as np
 from Agent import Agent
+import time
 
 def get_expected(obs,picked):
     if(not picked):
@@ -25,6 +26,12 @@ def get_picked(obs):
     else:
         return True
 
+def get_done(obs):
+    if(np.mean((obs['desired_goal'][0:3]-obs['achieved_goal'])**2) > 0.00015):
+        return False
+    else:
+        return True
+
 def get_reward(last_obs,obs_):
     last_dist = abs(last_obs['achieved_goal'][1] - last_obs['observation'][1])
     new__dist = abs(obs_['achieved_goal'][1] - obs_['observation'][1])
@@ -36,17 +43,18 @@ def get_reward(last_obs,obs_):
 agent = Agent(10000, [6])
 env = gym.make('FetchPickAndPlace-v1')
 env.seed(12)
-scores = []
+time_stamps = []
 avg_score= 0
-i = 0
-while(avg_score < 10000):
+begin = time.time()
+while(1):
     picked = False
     score = 0
     done = False
     obs = env.reset()
     last_obs = obs
     steps = 0
-    while steps < 500:
+    start = time.time()
+    while not done and steps < 500:
         #env.render()
         picked = get_picked(last_obs)
         grab = -1 if picked else 1
@@ -55,12 +63,14 @@ while(avg_score < 10000):
         obs_,reward,done,info = env.step(movement)
         reward = get_reward(last_obs,obs_)
         score += reward
+        done = get_done(obs_)
         agent.remember(get_observation(last_obs,picked),action.cpu().detach().numpy(),get_observation(obs_,picked),reward,done)
         agent.learn(action,get_expected(last_obs,picked=picked))
+        end = time.time()
+        #print(f"Time {end-begin} MSE: {torch.mean((action.cpu() - get_expected(last_obs,picked=picked))**2)}")
         last_obs = obs_
         steps = steps + 1
         env.render()
-    scores.append(score)
-    avg_score = np.mean(scores[-50:])
-    i = i + 1
-    print(f"Episode {i}, average score {avg_score}")
+    end = time.time()
+    time_stamps.append(end-start)
+    print(f"Total Time {end-begin} Iteration Time {end-start} Avg: {np.mean(time_stamps)}")

@@ -1,6 +1,6 @@
-from object_identifier import *
-from color_identifier import *
-from shape_identifier import *
+from ComputerVision.object_identifier import *
+from ComputerVision.color_identifier import *
+from ComputerVision.shape_identifier import *
 
 # Given the type of identifier and the path, return a new instance of it.
 def ObjectIdentifierFactory(type_identifier, img_path):

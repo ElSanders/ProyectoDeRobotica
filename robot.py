@@ -8,11 +8,6 @@ import matplotlib.pyplot as plt
 from mujoco_py import GlfwContext
 import cv2 
 GlfwContext(offscreen=True)
-import tensorflow as tf
-from tensorflow import keras
-assert tf.__version__ >= "2.0"
-if not tf.config.list_physical_devices('GPU'):
-    print("No GPU was detected. CNNs can be very slow without a GPU.")
 #Temporary variables for dummy policy
 counter = 0
 picked = False

@@ -1,11 +1,11 @@
 import cv2
-from object_identifier import *
-import image_util
+from ComputerVision.object_identifier import *
+from ComputerVision.image_util import *
 
 class ColorIdentifier(ObjectIdentifier):
     def ProcessImage(self):
         img = cv2.imread(self.img_path_)
-        image_util.WorkingArea(img)
+        WorkingArea(img)
         # Identify red ball
         img2 = img.copy()
         red_count = 0.0
@@ -19,7 +19,7 @@ class ColorIdentifier(ObjectIdentifier):
                     red_count += 1
                     x_red += i
                     y_red += j
-        self.obs['desired_goal'][0], self.obs['desired_goal'][1] = image_util.ToRealWorld(x_red / red_count, y_red / red_count)
+        self.obs['desired_goal'][0], self.obs['desired_goal'][1] = ToRealWorld(x_red / red_count, y_red / red_count)
         # Identify black square
         img = img2
         black_count = 0.0
@@ -33,7 +33,7 @@ class ColorIdentifier(ObjectIdentifier):
                     black_count += 1
                     x_black += i
                     y_black += j
-        self.obs['achieved_goal'][0], self.obs['achieved_goal'][1] = image_util.ToRealWorld(x_black / black_count, y_black / black_count)
+        self.obs['achieved_goal'][0], self.obs['achieved_goal'][1] = ToRealWorld(x_black / black_count, y_black / black_count)
 
 
 

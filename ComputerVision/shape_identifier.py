@@ -1,11 +1,11 @@
 import cv2
-from object_identifier import *
-import image_util
+from ComputerVision.object_identifier import *
+from ComputerVision.image_util import *
 
 class ShapeIdentifier(ObjectIdentifier):
     def ProcessImage(self):
         img = cv2.imread(self.img_path_)
-        image_util.WorkingArea(img)
+        WorkingArea(img)
         for i in range (560):
             for j in range(560):
                 if img[i][j][2] == 255 and img[i][j][0] < 200 and img[i][j][1] < 200:
@@ -46,11 +46,11 @@ class ShapeIdentifier(ObjectIdentifier):
             if len(approx) <= 7:
                 # Square
                 cv2.putText(img, 'Square', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-                self.obs['achieved_goal'][0], self.obs['achieved_goal'][1] = image_util.ToRealWorld(y,x)
+                self.obs['achieved_goal'][0], self.obs['achieved_goal'][1] = ToRealWorld(y,x)
             else:
                 # Circle
                 cv2.putText(img, 'Circle', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-                self.obs['desired_goal'][0], self.obs['desired_goal'][1] = image_util.ToRealWorld(y,x)
+                self.obs['desired_goal'][0], self.obs['desired_goal'][1] = ToRealWorld(y,x)
 
     def GetCordinates(self, obs):
         if (self.cont == 0):

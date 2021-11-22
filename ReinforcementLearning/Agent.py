@@ -4,8 +4,8 @@ import torch
 import torch.optim as optim
 from typing import NamedTuple
 
-from DQN import DQN
-from ReplayMemory import ReplayMemory
+from ReinforcementLearning.DQN import DQN
+from ReinforcementLearning.ReplayMemory import ReplayMemory
 
 class Agent():
     def __init__(self,max_memory_size,input_dims):
@@ -20,6 +20,9 @@ class Agent():
 
     def get_action(self,observation):
         action = self.model.forward(torch.tensor(observation,dtype=torch.float32).to(self.model.device))
+        if(len(self.memory) < self.BATCH_SIZE):
+            rands = torch.tensor(np.random.choice([-1,1],size=3)*np.random.random(size = 3))
+            action[0:3] = rands/10
         return action
     
     def remember(self, state,action,new_state,reward,finished):
@@ -42,5 +45,5 @@ class Agent():
         action_batch_iters = self.memory.action_batch(batch)
         finished_batch = torch.tensor(self.memory.finished_batch(batch),dtype=torch.bool).to(self.model.device)
        
-        loss = self.model.loss(prediction,expected.to(self.model.device)).to(self.model.device)  
+        loss = self.model.loss(prediction.to(self.model.device),expected.to(self.model.device)).to(self.model.device)  
         self.model.compute_loss(loss)
