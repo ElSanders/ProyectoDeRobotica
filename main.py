@@ -8,8 +8,6 @@ import time
 from ReinforcementLearning.utils import *
 
 agent = Agent(10000, [6])
-env = gym.make('FetchPickAndPlace-v1')
-env.seed(2021)
 time_stamps = []
 avg_score= 0
 begin = time.time()
@@ -19,17 +17,18 @@ while(1):
     picked = False
     score = 0
     done = False
+    env = gym.make('FetchPickAndPlace-v1')
     obs = env.reset()
-    env.get_viewer("human").cam.distance = 0.2
-    env.get_viewer("human").cam.azimuth = 0
-    env.get_viewer("human").cam.elevation = -90.0
-
-    TakePicture(env)    
+    env.render(mode='rgb_array')
+    env.get_viewer("rgb_array").cam.distance = 0.2
+    env.get_viewer("rgb_array").cam.azimuth = 0
+    env.get_viewer("rgb_array").cam.elevation = -90.0
+    TakePicture(env)
     vision.ProcessImage()
-
     env.get_viewer("human").cam.distance = 2.5
     env.get_viewer("human").cam.azimuth = 132.0
     env.get_viewer("human").cam.elevation = -14.0
+    env.render()
     last_obs = obs
     steps = 0
     start = time.time()
@@ -58,3 +57,4 @@ while(1):
     end = time.time()
     time_stamps.append(end-start)
     print(f"Total Time {end-begin} Avg: {np.mean(time_stamps)}")
+    env.close()
