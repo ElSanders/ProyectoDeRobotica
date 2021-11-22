@@ -6,10 +6,11 @@ from ComputerVision.object_identifier_factory import ObjectIdentifierFactory
 from ComputerVision.take_picture import TakePicture
 import time
 from ReinforcementLearning.utils import *
+import cv2
 
 agent = Agent(10000, [6])
 env = gym.make('FetchPickAndPlace-v1')
-env.seed(2021)
+env.seed(2042)
 time_stamps = []
 avg_score= 0
 begin = time.time()
@@ -20,16 +21,18 @@ while(1):
     score = 0
     done = False
     obs = env.reset()
-    env.get_viewer("human").cam.distance = 0.2
-    env.get_viewer("human").cam.azimuth = 0
-    env.get_viewer("human").cam.elevation = -90.0
-
+    env.get_viewer("rgb_array").cam.distance = 0.2
+    env.get_viewer("rgb_array").cam.azimuth = 0
+    env.get_viewer("rgb_array").cam.elevation = -90.0
+    img = env.render("rgb_array")
     TakePicture(env)    
-    vision.ProcessImage()
+    img = vision.ProcessImage()
+    cv2.imshow("Vision Model Input",img)
+    cv2.waitKey(16)
 
-    env.get_viewer("human").cam.distance = 2.5
-    env.get_viewer("human").cam.azimuth = 132.0
-    env.get_viewer("human").cam.elevation = -14.0
+    env.get_viewer("rgb_array").cam.distance = 2.5
+    env.get_viewer("rgb_array").cam.azimuth = 132.0
+    env.get_viewer("rgb_array").cam.elevation = -14.0
     last_obs = obs
     steps = 0
     start = time.time()
@@ -54,7 +57,9 @@ while(1):
         end = time.time()
         last_obs = obs_
         steps = steps + 1
-        env.render()
+        image = env.render('rgb_array')
+        cv2.imshow("Simulation",cv2.resize(image, (560,560), interpolation=cv2.INTER_LINEAR))
+        cv2.waitKey(16)
     end = time.time()
     time_stamps.append(end-start)
     print(f"Total Time {end-begin} Avg: {np.mean(time_stamps)}")
